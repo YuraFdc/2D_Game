@@ -1,3 +1,7 @@
+package main;
+
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,7 +11,7 @@ public class GamePanel extends JPanel implements Runnable{
     // Set scale for modern monitors
     final int scale = 3;
 
-    final int tileSize = originalTileSize * scale; // 48 x 48 tile
+    public final int tileSize = originalTileSize * scale; // 48 x 48 tile
     // How many tiles can be displayed on a single screen horizontally and vertically
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
@@ -18,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    Player player = new Player(this, keyH);
 
     // Set player's default position
     int playerX = 100;
@@ -33,7 +38,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         //
         this.addKeyListener(keyH);
-        // GamePanel can be focused to receive key input
+        // main.GamePanel can be focused to receive key input
         this.setFocusable(true);
     }
 
@@ -44,7 +49,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     @Override
     public void run() {
-        double drawInterval = 1000000000 / fps;
+        double drawInterval = (double) 1000000000 / fps;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -68,27 +73,14 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void update() {
-        if (keyH.upPressed) {
-            playerY -= playerSpeed;
-        }
-        else if (keyH.downPressed) {
-            playerY += playerSpeed;
-        }
-        else if (keyH.leftPressed) {
-            playerX -= playerSpeed;
-        }
-        else if (keyH.rightPressed) {
-            playerX += playerSpeed;
-        }
+        player.update();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2= (Graphics2D) g;
 
-        g2.setColor(Color.WHITE); // Set white color to use for drawing objects
-        // paint a square on the screen
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+        player.draw(g2);
         // after drawing free system resources
         g2.dispose();
     }
