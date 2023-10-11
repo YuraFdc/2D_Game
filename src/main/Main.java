@@ -22,6 +22,7 @@ public class Main {
         // Display window
         window.setVisible(true);
 
+        gamePanel.setupGame();
         gamePanel.startGameThreat();
     }
 }

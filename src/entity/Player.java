@@ -21,6 +21,8 @@ public class Player extends Entity{
         screenX = gp.screenWidth / 2 - gp.tileSize / 2;
         screenY = gp.screenHeight / 2 - gp.tileSize / 2;
 
+        solidArea = new Rectangle(8, 16, 32, 32);
+
         setDefaultValues();
         getPlayerImage();
     }
@@ -53,19 +55,37 @@ public class Player extends Entity{
                 || keyHandler.leftPressed == true || keyHandler.rightPressed == true) {
             if (keyHandler.upPressed) {
                 direction = "up";
-                worldY -= speed;
             }
             else if (keyHandler.downPressed) {
                 direction = "down";
-                worldY += speed;
             }
             else if (keyHandler.leftPressed) {
                 direction = "left";
-                worldX -= speed;
             }
             else if (keyHandler.rightPressed) {
                 direction = "right";
-                worldX += speed;
+            }
+
+            // CHECK TILE COLLISION
+            collisionOn = false;
+            gp.cChecker.checkTile(this);
+
+            // If collision is false, player can move
+            if (collisionOn == false) {
+                switch (direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
             }
 
             spriteCounter++;
@@ -80,6 +100,7 @@ public class Player extends Entity{
             }
         }
     }
+
     public void draw(Graphics2D g2) {
 //        g2.setColor(Color.WHITE); // Set white color to use for drawing objects
 //        // paint a square on the screen
